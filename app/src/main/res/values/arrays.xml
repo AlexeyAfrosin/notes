@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="note_example_names">
+        <item>Заметка 1</item>
+        <item>Заметка 2</item>
+        <item>Заметка 3</item>
+        <item>Заметка 4</item>
+        <item>Заметка 5</item>
+    </string-array>
+
+    <string-array name="note_example_texts">
+        <item>Текст 1</item>
+        <item>Текст 2</item>
+        <item>Текст 3</item>
+        <item>Текст 4</item>
+        <item>Текст 5</item>
+    </string-array>
+
+</resources>
