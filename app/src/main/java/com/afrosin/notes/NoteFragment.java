@@ -92,12 +92,14 @@ public class NoteFragment extends Fragment {
     }
 
     private void showLandNoteDetails(Note currentNote) {
-        NoteDetailsFragment noteDetailsFragment = NoteDetailsFragment.newInstance(currentNote);
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.note_details, noteDetailsFragment);  // замена фрагмента
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction.commit();
+        if (currentNote != null) {
+            NoteDetailsFragment noteDetailsFragment = NoteDetailsFragment.newInstance(currentNote);
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.note_details, noteDetailsFragment);  // замена фрагмента
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            fragmentTransaction.commit();
+        }
     }
 
 

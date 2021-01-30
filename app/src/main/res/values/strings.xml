@@ -4,4 +4,12 @@
     <string name="note_text_placeholder">Текст</string>
     <string name="note_date_created">Создано: </string>
     <string name="tv_date_created">Дата создания:</string>
+    <string name="settings">Настройки</string>
+    <string name="about">О программе</string>
+    <string name="search">Поиск</string>
+    <string name="navigation_drawer_open">Открыть панель навигации</string>
+    <string name="navigation_drawer_close">Закрыть панель навигации</string>
+    <string name="title_about_text">О программе</string>
+    <string name="about_text">Программа \"Заметки\" разработана Афросиным А. <br /><br /> Студеном GeekBrains.<br /><br />2021 г.</string>
+    <string name="nav_bar_header">Рисунок в навигационном меню</string>
 </resources>
