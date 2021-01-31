@@ -4,4 +4,9 @@
     <dimen name="margin_end">15dp</dimen>
     <dimen name="margin_start">15dp</dimen>
     <dimen name="margin_bottom">15dp</dimen>
+    <dimen name="settings_dimen">30sp</dimen>
+    <dimen name="fragment_dimen">40sp</dimen>
+    <dimen name="nav_header_height">300dp</dimen>
+    <dimen name="nav_header_dimen">42sp</dimen>
+    <dimen name="nav_bar_image_height">200dp</dimen>
 </resources>
