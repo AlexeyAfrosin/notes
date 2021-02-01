@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Заметки</string>
     <string name="note_name_placeholder">Название</string>
-    <string name="note_text_placeholder">Текст</string>
+    <string name="note_text_placeholder">Текст заметки</string>
     <string name="note_date_created">Создано: </string>
     <string name="tv_date_created">Дата создания:</string>
     <string name="settings">Настройки</string>

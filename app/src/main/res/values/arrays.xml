@@ -6,6 +6,11 @@
         <item>Заметка 3</item>
         <item>Заметка 4</item>
         <item>Заметка 5</item>
+        <item>Заметка 6</item>
+        <item>Заметка 7</item>
+        <item>Заметка 8</item>
+        <item>Заметка 9</item>
+        <item>Заметка 10</item>
     </string-array>
 
     <string-array name="note_example_texts">
@@ -14,6 +19,11 @@
         <item>Текст 3</item>
         <item>Текст 4</item>
         <item>Текст 5</item>
+        <item>Текст 6</item>
+        <item>Текст 7</item>
+        <item>Текст 8</item>
+        <item>Текст 9</item>
+        <item>Текст 10</item>
     </string-array>
 
 </resources>

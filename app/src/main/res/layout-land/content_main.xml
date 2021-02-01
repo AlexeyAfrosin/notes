@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/notes"
-        android:name="com.afrosin.notes.NoteFragment"
+        android:name="com.afrosin.notes.ui.NoteFragment"
         android:layout_width="0px"
         android:layout_height="match_parent"
         android:layout_weight="1" />

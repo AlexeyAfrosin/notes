@@ -7,7 +7,7 @@
     tools:context=".NoteDetailsFragment">
 
     <include
-        layout="@layout/note_item"
+        layout="@layout/note_detail_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
