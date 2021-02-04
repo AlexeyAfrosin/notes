@@ -37,36 +37,36 @@ public class NoteFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_note, container, false);
-        RecyclerView rc_notes = view.findViewById(R.id.rc_notes);
+        RecyclerView notesRecyclerView = view.findViewById(R.id.notesRecyclerView);
 
         Resources resources = getResources();
         Context context = getContext();
 
         noteCardsSource = new NoteCardsSourceImp(resources).init();
-        initRecyclerView(rc_notes, noteCardsSource);
-        initItemDecoration(rc_notes, resources, context);
+        initRecyclerView(notesRecyclerView, noteCardsSource);
+        initItemDecoration(notesRecyclerView, resources, context);
 
         return view;
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private void initItemDecoration(RecyclerView rc_notes, Resources resources, Context context) {
+    private void initItemDecoration(RecyclerView notesRecyclerView, Resources resources, Context context) {
         DividerItemDecoration itemDecoration = new DividerItemDecoration(context, LinearLayoutManager.VERTICAL);
         itemDecoration.setDrawable(resources.getDrawable(R.drawable.note_separator, null));
-        rc_notes.addItemDecoration(itemDecoration);
+        notesRecyclerView.addItemDecoration(itemDecoration);
     }
 
-    private void initRecyclerView(RecyclerView rc_notes, NoteCardsSource noteCardsSource) {
+    private void initRecyclerView(RecyclerView notesRecyclerView, NoteCardsSource noteCardsSource) {
         // Эта установка служит для повышения производительности системы
-        rc_notes.setHasFixedSize(true);
+        notesRecyclerView.setHasFixedSize(true);
 
         // Будем работать со встроенным менеджером
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        rc_notes.setLayoutManager(layoutManager);
+        notesRecyclerView.setLayoutManager(layoutManager);
 
         // Установим адаптер
         noteAdapter = new NoteAdapter(noteCardsSource);
-        rc_notes.setAdapter(noteAdapter);
+        notesRecyclerView.setAdapter(noteAdapter);
         noteAdapter.setItemClickListener((view, note) -> showNoteDetails(note));
     }
 
