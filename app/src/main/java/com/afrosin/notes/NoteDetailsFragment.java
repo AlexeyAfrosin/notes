@@ -5,9 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+
+import com.afrosin.notes.data.Note;
 
 public class NoteDetailsFragment extends Fragment {
 
@@ -35,11 +38,11 @@ public class NoteDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_details, container, false);
 
-        TextView tvNoteName = view.findViewById(R.id.tv_name);
+        TextView tvNoteName = view.findViewById(R.id.et_name);
         tvNoteName.setText(note.getName());
 
-        TextView tvNoteText = view.findViewById(R.id.tv_text);
-        tvNoteText.setText(note.getText());
+        EditText etNoteText = view.findViewById(R.id.et_text);
+        etNoteText.setText(note.getText());
 
         DatePicker dpDateCreated = view.findViewById(R.id.dp_date_created);
         dpDateCreated.setMinDate(note.getDateCreated().getTime());

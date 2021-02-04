@@ -1,4 +1,4 @@
-package com.afrosin.notes;
+package com.afrosin.notes.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

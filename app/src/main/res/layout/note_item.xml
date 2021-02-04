@@ -1,46 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_marginStart="@dimen/margin_start"
+    android:layout_marginEnd="@dimen/margin_end">
 
     <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="match_parent"
+        android:id="@+id/tv_note_item"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/margin_top"
-        android:layout_marginEnd="@dimen/margin_end"
-        android:text="@string/note_name_placeholder" />
+        android:layout_margin="@dimen/margin_top"
+        android:textSize="@dimen/tv_note_item_text"
+        tools:text="Заметка 1" />
 
-    <TextView
-        android:id="@+id/tv_date_created"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/margin_top"
-        android:layout_marginEnd="@dimen/margin_end"
-        android:text="@string/tv_date_created" />
-
-    <DatePicker
-        android:id="@+id/dp_date_created"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/margin_top"
-        android:layout_marginEnd="@dimen/margin_end"
-        android:calendarViewShown="false"
-        android:clickable="false"
-        android:datePickerMode="spinner" />
-
-    <TextView
-        android:id="@+id/tv_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/margin_top"
-        android:layout_marginEnd="@dimen/margin_end"
-        android:layout_marginBottom="@dimen/margin_bottom"
-        android:text="@string/note_text_placeholder" />
-
-</LinearLayout>
+</androidx.cardview.widget.CardView>
