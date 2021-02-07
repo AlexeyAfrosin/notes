@@ -17,17 +17,25 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.afrosin.notes.observe.Publisher;
+import com.afrosin.notes.observe.PublisherGetter;
 import com.afrosin.notes.ui.NoteFragment;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.Objects;
 
-    private String ABOUT_DIALOG_FRAGMENT_TAG = "about_dialog_fragment_tag";
+public class MainActivity extends AppCompatActivity implements PublisherGetter {
+
+    private final String ABOUT_DIALOG_FRAGMENT_TAG = "about_dialog_fragment_tag";
     private DialogFragment aboutDialogFragment;
+
+    private final Publisher publisher = new Publisher();
+    private Navigation navigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        navigation = new Navigation(getSupportFragmentManager());
         setContentView(R.layout.activity_main);
         initView();
     }
@@ -54,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public Navigation getNavigation() {
+        return navigation;
+    }
+
     private void initAboutDialog() {
         aboutDialogFragment = new AboutDialogFragment();
     }
@@ -61,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         return (toolbar);
     }
 
@@ -130,6 +144,17 @@ public class MainActivity extends AppCompatActivity {
             showAboutDialog();
             return false;
         });
+    }
+
+    @Override
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
 }

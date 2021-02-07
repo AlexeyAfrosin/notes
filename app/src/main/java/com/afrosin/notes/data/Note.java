@@ -3,6 +3,7 @@ package com.afrosin.notes.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Note implements Parcelable {
@@ -13,11 +14,7 @@ public class Note implements Parcelable {
     public Note(String name, String text, Date dateCreated) {
         this.name = name;
         this.text = text;
-        if (dateCreated != null) {
-            this.dateCreated = dateCreated;
-        } else {
-            this.dateCreated = new Date();
-        }
+        this.dateCreated = dateCreated;
     }
 
     protected Note(Parcel in) {
@@ -56,6 +53,10 @@ public class Note implements Parcelable {
 
     public Date getDateCreated() {
         return dateCreated;
+    }
+
+    public String getDateCreatedStr() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(dateCreated);
     }
 
     public void setDateCreated(Date dateCreated) {

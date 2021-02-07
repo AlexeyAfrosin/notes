@@ -19,24 +19,13 @@
         tool:text="@string/note_name_placeholder" />
 
     <TextView
-        android:id="@+id/tv_date_created"
+        android:id="@+id/tv_note_date_created"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
         android:layout_marginTop="@dimen/margin_top"
         android:layout_marginEnd="@dimen/margin_end"
         android:text="@string/tv_date_created" />
-
-    <DatePicker
-        android:id="@+id/dp_date_created"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/margin_top"
-        android:layout_marginEnd="@dimen/margin_end"
-        android:calendarViewShown="false"
-        android:clickable="false"
-        android:datePickerMode="spinner" />
 
     <EditText
         android:id="@+id/et_text"

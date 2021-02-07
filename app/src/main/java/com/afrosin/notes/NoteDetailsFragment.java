@@ -1,21 +1,32 @@
 package com.afrosin.notes;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.afrosin.notes.data.Note;
+import com.afrosin.notes.observe.Publisher;
+
+import java.util.Date;
 
 public class NoteDetailsFragment extends Fragment {
 
     public static final String ARG_NOTE = "agr_note";
+    public static final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "DATE_PICKER_DIALOG_FRAGMENT_TAG";
     private Note note;
+    private Publisher publisher;
+    EditText noteNameEditText;
+    EditText noteTextEditText;
+    TextView noteDateCreatedEditText;
+    Date dateCreated;
+
 
     public static NoteDetailsFragment newInstance(Note note) {
         NoteDetailsFragment fragment = new NoteDetailsFragment();
@@ -23,6 +34,10 @@ public class NoteDetailsFragment extends Fragment {
         args.putParcelable(ARG_NOTE, note);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static NoteDetailsFragment newInstance() {
+        return new NoteDetailsFragment();
     }
 
     @Override
@@ -34,20 +49,69 @@ public class NoteDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        MainActivity activity = (MainActivity) context;
+        publisher = activity.getPublisher();
+    }
+
+    @Override
+    public void onDetach() {
+        publisher = null;
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        publisher.notifySingle(note);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        note = collectNote();
+    }
+
+    private Note collectNote() {
+        String name = noteNameEditText.getText().toString();
+        String text = noteTextEditText.getText().toString();
+
+        return new Note(name, text, dateCreated);
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_details, container, false);
 
-        TextView tvNoteName = view.findViewById(R.id.et_name);
-        tvNoteName.setText(note.getName());
+        initView(view);
 
-        EditText etNoteText = view.findViewById(R.id.et_text);
-        etNoteText.setText(note.getText());
-
-        DatePicker dpDateCreated = view.findViewById(R.id.dp_date_created);
-        dpDateCreated.setMinDate(note.getDateCreated().getTime());
-        dpDateCreated.setMaxDate(note.getDateCreated().getTime());
+        if (note != null) {
+            fillView();
+        }
 
         return view;
+    }
+
+    private void fillView() {
+        noteNameEditText.setText(note.getName());
+        noteTextEditText.setText(note.getText());
+        noteDateCreatedEditText.setText(String.format(getResources().getString(R.string.tv_date_created), note.getDateCreatedStr()));
+        dateCreated = note.getDateCreated();
+//        initDatePicker(note.getDateCreated());
+    }
+
+
+    private void initView(View view) {
+        noteNameEditText = view.findViewById(R.id.et_name);
+        noteTextEditText = view.findViewById(R.id.et_text);
+        noteDateCreatedEditText = view.findViewById(R.id.tv_note_date_created);
+        noteDateCreatedEditText.setOnClickListener(v -> {
+            DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
+            datePickerDialogFragment.show(requireActivity().getSupportFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
+        });
+
     }
 }
