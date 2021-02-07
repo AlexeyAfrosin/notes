@@ -1,5 +1,6 @@
 package com.afrosin.notes;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,10 +14,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.afrosin.notes.ui.NoteFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +36,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
         initAboutDialog();
+        initMainFragmentContainer();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    private void initMainFragmentContainer() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            NoteFragment noteFragment = new NoteFragment();
+            fragmentTransaction.replace(R.id.main_fragment_container, noteFragment);
+            fragmentTransaction.commit();
+        }
     }
 
     private void initAboutDialog() {

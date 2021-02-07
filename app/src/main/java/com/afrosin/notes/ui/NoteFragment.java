@@ -2,7 +2,6 @@ package com.afrosin.notes.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.afrosin.notes.NoteDetailActivity;
 import com.afrosin.notes.NoteDetailsFragment;
 import com.afrosin.notes.R;
 import com.afrosin.notes.data.Note;
@@ -110,21 +108,24 @@ public class NoteFragment extends Fragment {
 
     private void showLandNoteDetails(Note currentNote) {
         if (currentNote != null) {
-            NoteDetailsFragment noteDetailsFragment = NoteDetailsFragment.newInstance(currentNote);
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.note_details, noteDetailsFragment);  // замена фрагмента
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            fragmentTransaction.commit();
+            addNoteDetailsFragment(R.id.note_details, currentNote, false);
         }
     }
 
-
     private void showPortNoteDetails(Note currentNote) {
-        Intent intent = new Intent();
-        intent.setClass(getActivity(), NoteDetailActivity.class);
-        intent.putExtra(NoteDetailsFragment.ARG_NOTE, currentNote);
-        startActivity(intent);
+        addNoteDetailsFragment(R.id.main_fragment_container, currentNote, true);
+    }
+
+    private void addNoteDetailsFragment(int containerId, Note currentNote, boolean useBackStack) {
+        NoteDetailsFragment noteDetailsFragment = NoteDetailsFragment.newInstance(currentNote);
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(containerId, noteDetailsFragment);  // замена фрагмента
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        if (useBackStack) {
+            fragmentTransaction.addToBackStack(null);
+        }
+        fragmentTransaction.commit();
     }
 
 }
