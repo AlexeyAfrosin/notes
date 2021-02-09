@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.afrosin.notes.R;
@@ -14,34 +15,59 @@ import com.afrosin.notes.data.NoteCardsSource;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
-    private NoteCardsSource dataSource;
+    private final NoteCardsSource dataSource;
     private OnItemClickListener itemClickListener;  // Слушатель будет устанавливаться извне
+    private final Fragment cardItemMenuFragment;
+
+    public int getMenuPosition() {
+        return menuPosition;
+    }
+
+    private int menuPosition;
 
 
-    public NoteAdapter(NoteCardsSource dataSource) {
+    public NoteAdapter(NoteCardsSource dataSource, Fragment cardItemMenuFragment) {
         this.dataSource = dataSource;
+        this.cardItemMenuFragment = cardItemMenuFragment;
     }
 
     // Этот класс хранит связь между данными и элементами View
     // Сложные данные могут потребовать несколько View на один пункт списка
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView textView;
+        private final TextView textView;
+        private final TextView dateCreatedTextView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.tv_note_item);
+            dateCreatedTextView = itemView.findViewById(R.id.tv_date_created);
+            registerContextMenu(itemView);
             itemView.setOnClickListener(v -> {
                 if (itemClickListener != null) {
                     itemClickListener.onItemClick(v, dataSource.getCardData(getAdapterPosition()));
                 }
+            });
 
+            itemView.setOnLongClickListener(v -> {
+                menuPosition = getLayoutPosition();
+                return false;
             });
         }
 
 
+        public TextView getDateCreatedTextView() {
+            return dateCreatedTextView;
+        }
+
         public TextView getTextView() {
             return textView;
+        }
+    }
+
+    private void registerContextMenu(View itemView) {
+        if (cardItemMenuFragment != null) {
+            cardItemMenuFragment.registerForContextMenu(itemView);
         }
     }
 
@@ -69,6 +95,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull NoteAdapter.ViewHolder viewHolder, int positionIdx) {
         viewHolder.getTextView().setText(dataSource.getCardData(positionIdx).getName());
+        viewHolder.getDateCreatedTextView().setText(dataSource.getCardData(positionIdx).getDateCreatedStr());
     }
 
     @Override

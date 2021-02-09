@@ -1,5 +1,6 @@
 package com.afrosin.notes;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,20 +14,28 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.afrosin.notes.observe.Publisher;
+import com.afrosin.notes.observe.PublisherGetter;
+import com.afrosin.notes.ui.NoteFragment;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.Objects;
 
-    private String ABOUT_DIALOG_FRAGMENT_TAG = "about_dialog_fragment_tag";
+public class MainActivity extends AppCompatActivity implements PublisherGetter {
+
+    private final String ABOUT_DIALOG_FRAGMENT_TAG = "about_dialog_fragment_tag";
     private DialogFragment aboutDialogFragment;
+
+    private final Publisher publisher = new Publisher();
+    private Navigation navigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        navigation = new Navigation(getSupportFragmentManager());
         setContentView(R.layout.activity_main);
         initView();
     }
@@ -35,6 +44,26 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
         initAboutDialog();
+        initMainFragmentContainer();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    private void initMainFragmentContainer() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            NoteFragment noteFragment = new NoteFragment();
+            fragmentTransaction.replace(R.id.main_fragment_container, noteFragment);
+            fragmentTransaction.commit();
+        }
+    }
+
+    public Navigation getNavigation() {
+        return navigation;
     }
 
     private void initAboutDialog() {
@@ -44,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         return (toolbar);
     }
 
@@ -113,6 +144,17 @@ public class MainActivity extends AppCompatActivity {
             showAboutDialog();
             return false;
         });
+    }
+
+    @Override
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
 }
