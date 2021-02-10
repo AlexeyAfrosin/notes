@@ -4,9 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Note implements Parcelable {
+    private String id;
     private String name;
     private String text;
     private Date dateCreated;
@@ -52,11 +54,18 @@ public class Note implements Parcelable {
     }
 
     public Date getDateCreated() {
+        if (dateCreated == null) {
+            return (Date) Calendar.getInstance().getTime();
+        }
         return dateCreated;
     }
 
     public String getDateCreatedStr() {
-        return new SimpleDateFormat("dd-MM-yyyy").format(dateCreated);
+        if (dateCreated != null) {
+            return new SimpleDateFormat("dd-MM-yyyy").format(dateCreated);
+        }
+        return " ";
+
     }
 
     public void setDateCreated(Date dateCreated) {
@@ -73,5 +82,13 @@ public class Note implements Parcelable {
         parcel.writeString(getName());
         parcel.writeString(getText());
         parcel.writeLong(getDateCreated().getTime());
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

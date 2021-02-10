@@ -16,7 +16,7 @@ public class NoteCardsSourceImp implements NoteCardsSource {
         this.resources = resources;
     }
 
-    public NoteCardsSourceImp init() {
+    public NoteCardsSourceImp init(NoteCardsSourceResponse noteCardsSourceResponse) {
 
         String[] names = resources.getStringArray(R.array.note_example_names);
         String[] texts = resources.getStringArray(R.array.note_example_texts);
@@ -24,11 +24,15 @@ public class NoteCardsSourceImp implements NoteCardsSource {
         for (int i = 0; i < names.length; i++) {
             notesDataSource.add(new Note(names[i], texts[i], Calendar.getInstance().getTime()));
         }
+
+        if (noteCardsSourceResponse != null) {
+            noteCardsSourceResponse.initialized(this);
+        }
         return this;
     }
 
     @Override
-    public Note getCardData(int position) {
+    public Note getNoteCardData(int position) {
         return notesDataSource.get(position);
     }
 
@@ -38,22 +42,22 @@ public class NoteCardsSourceImp implements NoteCardsSource {
     }
 
     @Override
-    public void deleteCardData(int position) {
+    public void deleteNoteCardData(int position) {
         notesDataSource.remove(position);
     }
 
     @Override
-    public void updateCardData(int position, Note note) {
+    public void updateNoteCardData(int position, Note note) {
         notesDataSource.set(position, note);
     }
 
     @Override
-    public void addCardData(Note note) {
+    public void addNoteCardData(Note note) {
         notesDataSource.add(note);
     }
 
     @Override
-    public void clearCardData() {
+    public void clearNoteCardData() {
         notesDataSource.clear();
     }
 }

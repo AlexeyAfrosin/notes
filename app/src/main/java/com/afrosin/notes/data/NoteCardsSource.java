@@ -1,15 +1,18 @@
 package com.afrosin.notes.data;
 
 public interface NoteCardsSource {
-    Note getCardData(int position);
+
+    NoteCardsSource init(NoteCardsSourceResponse noteCardsSourceResponse);
+
+    Note getNoteCardData(int position);
 
     int size();
 
-    void deleteCardData(int position);
+    void deleteNoteCardData(int position);
 
-    void updateCardData(int position, Note note);
+    void updateNoteCardData(int position, Note note);
 
-    void addCardData(Note note);
+    void addNoteCardData(Note note);
 
-    void clearCardData();
+    void clearNoteCardData();
 }

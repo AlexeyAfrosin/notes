@@ -15,7 +15,7 @@ import com.afrosin.notes.data.NoteCardsSource;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
-    private final NoteCardsSource dataSource;
+    private NoteCardsSource dataSource;
     private OnItemClickListener itemClickListener;  // Слушатель будет устанавливаться извне
     private final Fragment cardItemMenuFragment;
 
@@ -26,9 +26,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     private int menuPosition;
 
 
-    public NoteAdapter(NoteCardsSource dataSource, Fragment cardItemMenuFragment) {
-        this.dataSource = dataSource;
+    public NoteAdapter(Fragment cardItemMenuFragment) {
         this.cardItemMenuFragment = cardItemMenuFragment;
+    }
+
+    public void setDataSource(NoteCardsSource dataSource) {
+        this.dataSource = dataSource;
+        notifyDataSetChanged();
     }
 
     // Этот класс хранит связь между данными и элементами View
@@ -45,7 +49,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
             registerContextMenu(itemView);
             itemView.setOnClickListener(v -> {
                 if (itemClickListener != null) {
-                    itemClickListener.onItemClick(v, dataSource.getCardData(getAdapterPosition()));
+                    itemClickListener.onItemClick(v, dataSource.getNoteCardData(getAdapterPosition()));
                 }
             });
 
@@ -94,13 +98,16 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull NoteAdapter.ViewHolder viewHolder, int positionIdx) {
-        viewHolder.getTextView().setText(dataSource.getCardData(positionIdx).getName());
-        viewHolder.getDateCreatedTextView().setText(dataSource.getCardData(positionIdx).getDateCreatedStr());
+        viewHolder.getTextView().setText(dataSource.getNoteCardData(positionIdx).getName());
+        viewHolder.getDateCreatedTextView().setText(dataSource.getNoteCardData(positionIdx).getDateCreatedStr());
     }
 
     @Override
     public int getItemCount() {
-        return dataSource.size();
+        if (dataSource != null) {
+            return dataSource.size();
+        }
+        return 0;
     }
 
 
