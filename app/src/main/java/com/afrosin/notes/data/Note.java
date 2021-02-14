@@ -55,7 +55,7 @@ public class Note implements Parcelable {
 
     public Date getDateCreated() {
         if (dateCreated == null) {
-            return (Date) Calendar.getInstance().getTime();
+            return Calendar.getInstance().getTime();
         }
         return dateCreated;
     }
