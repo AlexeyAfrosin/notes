@@ -28,8 +28,8 @@ import com.afrosin.notes.Navigation;
 import com.afrosin.notes.NoteDetailsFragment;
 import com.afrosin.notes.R;
 import com.afrosin.notes.data.Note;
+import com.afrosin.notes.data.NoteCardSourceFirebaseImpl;
 import com.afrosin.notes.data.NoteCardsSource;
-import com.afrosin.notes.data.NoteCardsSourceImp;
 import com.afrosin.notes.observe.Observer;
 import com.afrosin.notes.observe.Publisher;
 
@@ -43,7 +43,7 @@ public class NoteFragment extends Fragment {
     private NoteCardsSource noteCardsSource;
     private NoteAdapter noteAdapter;
     private RecyclerView notesRecyclerView;
-    private boolean moveToLastPosition;
+    private boolean moveToFirstPosition;
     private Navigation navigation;
     private Publisher publisher;
 
@@ -55,14 +55,9 @@ public class NoteFragment extends Fragment {
 
         initView(view);
         setHasOptionsMenu(true);
+        noteCardsSource = new NoteCardSourceFirebaseImpl().init(noteCardsSource -> noteAdapter.notifyDataSetChanged());
+        noteAdapter.setDataSource(noteCardsSource);
         return view;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        noteCardsSource = new NoteCardsSourceImp(getResources()).init();
     }
 
     @Override
@@ -72,28 +67,52 @@ public class NoteFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return onItemSelected(item.getItemId()) || super.onOptionsItemSelected(item);
+    }
 
-        switch (item.getItemId()) {
+    private boolean onItemSelected(int menuItemId) {
+        switch (menuItemId) {
             case R.id.m_action_add:
                 navigation.addFragment(NoteDetailsFragment.newInstance(), true);
                 publisher.subscribe(new Observer() {
                                         @Override
                                         public void updateCardData(Note note) {
-                                            noteCardsSource.addCardData(note);
+                                            noteCardsSource.addNoteCardData(note);
                                             noteAdapter.notifyItemInserted(noteCardsSource.size() - 1);
-//                                            notesRecyclerView.smoothScrollToPosition(noteCardsSource.size() - 1);
-                                            moveToLastPosition = true;
+                                            moveToFirstPosition = true;
                                         }
                                     }
                 );
 
                 return true;
+            case R.id.m_action_update:
+                final int updatePosition = noteAdapter.getMenuPosition();
+
+                navigation.addFragment(NoteDetailsFragment.newInstance(noteCardsSource.getNoteCardData(updatePosition)), true);
+                publisher.subscribe(new Observer() {
+                                        @Override
+                                        public void updateCardData(Note note) {
+                                            noteCardsSource.updateNoteCardData(updatePosition, note);
+                                            noteAdapter.notifyItemInserted(noteCardsSource.size() - 1);
+                                            noteAdapter.notifyItemChanged(updatePosition);
+                                        }
+                                    }
+                );
+
+                return true;
+            case R.id.m_action_delete:
+                final int deletePosition = noteAdapter.getMenuPosition();
+                deleteNoteDetailFragment(noteCardsSource.getNoteCardData(deletePosition));
+                noteCardsSource.deleteNoteCardData(deletePosition);
+                noteAdapter.notifyItemRemoved(deletePosition);
+                return true;
             case R.id.m_action_clear_all:
-                noteCardsSource.clearCardData();
+                noteCardsSource.clearNoteCardData();
                 noteAdapter.notifyDataSetChanged();
                 return true;
         }
-        return super.onOptionsItemSelected(item);
+
+        return false;
     }
 
     @Override
@@ -120,9 +139,9 @@ public class NoteFragment extends Fragment {
         initItemDecoration(notesRecyclerView, resources, context);
         initItemAnimation(notesRecyclerView);
 
-        if (moveToLastPosition) {
-            notesRecyclerView.smoothScrollToPosition(noteCardsSource.size() - 1);
-            moveToLastPosition = false;
+        if (moveToFirstPosition && noteCardsSource.size() > 0) {
+            notesRecyclerView.smoothScrollToPosition(0);
+            moveToFirstPosition = false;
         }
     }
 
@@ -149,7 +168,7 @@ public class NoteFragment extends Fragment {
         notesRecyclerView.setLayoutManager(layoutManager);
 
         // Установим адаптер
-        noteAdapter = new NoteAdapter(noteCardsSource, this);
+        noteAdapter = new NoteAdapter(this);
         notesRecyclerView.setAdapter(noteAdapter);
         noteAdapter.setItemClickListener((view, note) -> showNoteDetails(note));
     }
@@ -173,7 +192,7 @@ public class NoteFragment extends Fragment {
             currentNote = savedInstanceState.getParcelable(NoteDetailsFragment.ARG_NOTE);
         } else {
             if (noteCardsSource != null && noteCardsSource.size() > 0) {
-                currentNote = noteCardsSource.getCardData(0);
+                currentNote = noteCardsSource.getNoteCardData(0);
             }
         }
 
@@ -225,30 +244,7 @@ public class NoteFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-
-        int position = noteAdapter.getMenuPosition();
-
-        switch (item.getItemId()) {
-            case R.id.m_action_update:
-                navigation.addFragment(NoteDetailsFragment.newInstance(noteCardsSource.getCardData(position)), true);
-                publisher.subscribe(new Observer() {
-                                        @Override
-                                        public void updateCardData(Note note) {
-                                            noteCardsSource.updateCardData(position, note);
-                                            noteAdapter.notifyItemInserted(noteCardsSource.size() - 1);
-                                            noteAdapter.notifyItemChanged(position);
-                                        }
-                                    }
-                );
-
-                return true;
-            case R.id.m_action_delete:
-                deleteNoteDetailFragment(noteCardsSource.getCardData(position));
-                noteCardsSource.deleteCardData(position);
-                noteAdapter.notifyItemRemoved(position);
-                return true;
-        }
-        return super.onContextItemSelected(item);
+        return onItemSelected(item.getItemId()) || super.onContextItemSelected(item);
     }
 
     private void deleteNoteDetailFragment(Note note) {

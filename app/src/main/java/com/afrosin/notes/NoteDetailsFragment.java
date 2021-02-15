@@ -77,7 +77,13 @@ public class NoteDetailsFragment extends Fragment {
         String name = noteNameEditText.getText().toString();
         String text = noteTextEditText.getText().toString();
 
-        return new Note(name, text, dateCreated);
+        Note tmpNote = new Note(name, text, dateCreated);
+        if (note != null) {
+            tmpNote.setId(note.getId());
+            return tmpNote;
+        }
+
+        return tmpNote;
     }
 
 
