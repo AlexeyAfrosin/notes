@@ -46,7 +46,10 @@ public class NoteCardSourceFirebaseImpl implements NoteCardsSource {
 
     @Override
     public Note getNoteCardData(int position) {
-        return notesDataSource.get(position);
+        if (notesDataSource.size() > position) {
+            return notesDataSource.get(position);
+        }
+        return null;
     }
 
     @Override

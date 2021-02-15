@@ -14,18 +14,21 @@ import androidx.fragment.app.Fragment;
 import com.afrosin.notes.data.Note;
 import com.afrosin.notes.observe.Publisher;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class NoteDetailsFragment extends Fragment {
 
     public static final String ARG_NOTE = "agr_note";
     public static final String DATE_PICKER_DIALOG_FRAGMENT_TAG = "DATE_PICKER_DIALOG_FRAGMENT_TAG";
+    public static final String NOTE_DETAILS_FRAGMENT_TAG = "NOTE_DETAILS_FRAGMENT_TAG";
     private Note note;
     private Publisher publisher;
     EditText noteNameEditText;
     EditText noteTextEditText;
     TextView noteDateCreatedEditText;
     Date dateCreated;
+    MainActivity activity;
 
 
     public static NoteDetailsFragment newInstance(Note note) {
@@ -51,7 +54,7 @@ public class NoteDetailsFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        MainActivity activity = (MainActivity) context;
+        activity = (MainActivity) context;
         publisher = activity.getPublisher();
     }
 
@@ -115,9 +118,19 @@ public class NoteDetailsFragment extends Fragment {
         noteTextEditText = view.findViewById(R.id.et_text);
         noteDateCreatedEditText = view.findViewById(R.id.tv_note_date_created);
         noteDateCreatedEditText.setOnClickListener(v -> {
-            DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
+            DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment(activity.getNavigation());
             datePickerDialogFragment.show(requireActivity().getSupportFragmentManager(), DATE_PICKER_DIALOG_FRAGMENT_TAG);
         });
 
+    }
+
+    public void onDatePickerDialogFragmentResult(Date dateCreated) {
+        if (note != null) {
+            note.setDateCreated(dateCreated);
+            fillView();
+        } else {
+            this.dateCreated = dateCreated;
+            noteDateCreatedEditText.setText(String.format(getResources().getString(R.string.tv_date_created), new SimpleDateFormat("dd-MM-yyyy").format(dateCreated)));
+        }
     }
 }

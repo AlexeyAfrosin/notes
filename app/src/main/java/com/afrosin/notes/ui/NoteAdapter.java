@@ -19,12 +19,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     private OnItemClickListener itemClickListener;  // Слушатель будет устанавливаться извне
     private final Fragment cardItemMenuFragment;
 
+    private int menuPosition;
+    private int currentNotePosition;
+
+    public int getCurrentNotePosition() {
+        return currentNotePosition;
+    }
+
+
     public int getMenuPosition() {
         return menuPosition;
     }
-
-    private int menuPosition;
-
 
     public NoteAdapter(Fragment cardItemMenuFragment) {
         this.cardItemMenuFragment = cardItemMenuFragment;
@@ -48,8 +53,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
             dateCreatedTextView = itemView.findViewById(R.id.tv_date_created);
             registerContextMenu(itemView);
             itemView.setOnClickListener(v -> {
+                currentNotePosition = getAdapterPosition();
                 if (itemClickListener != null) {
-                    itemClickListener.onItemClick(v, dataSource.getNoteCardData(getAdapterPosition()));
+                    itemClickListener.onItemClick(v, dataSource.getNoteCardData(currentNotePosition));
                 }
             });
 

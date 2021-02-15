@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,8 +35,6 @@ import com.afrosin.notes.observe.Publisher;
 public class NoteFragment extends Fragment {
 
     private static final int MY_DEFAULT_ANIMATION_DURATION = 1000;
-    private static final String NOTE_DETAILS_FRAGMENT_TAG = "NOTE_DETAILS_FRAGMENT_TAG";
-
     private boolean isLandscape;
     private Note currentNote;
     private NoteCardsSource noteCardsSource;
@@ -73,7 +70,11 @@ public class NoteFragment extends Fragment {
     private boolean onItemSelected(int menuItemId) {
         switch (menuItemId) {
             case R.id.m_action_add:
-                navigation.addFragment(NoteDetailsFragment.newInstance(), true);
+                navigation.addFragment(NoteDetailsFragment.newInstance(),
+                        true,
+                        NoteDetailsFragment.NOTE_DETAILS_FRAGMENT_TAG,
+                        R.id.main_fragment_container
+                );
                 publisher.subscribe(new Observer() {
                                         @Override
                                         public void updateCardData(Note note) {
@@ -88,7 +89,11 @@ public class NoteFragment extends Fragment {
             case R.id.m_action_update:
                 final int updatePosition = noteAdapter.getMenuPosition();
 
-                navigation.addFragment(NoteDetailsFragment.newInstance(noteCardsSource.getNoteCardData(updatePosition)), true);
+                navigation.addFragment(NoteDetailsFragment.newInstance(noteCardsSource.getNoteCardData(updatePosition)),
+                        true,
+                        NoteDetailsFragment.NOTE_DETAILS_FRAGMENT_TAG,
+                        R.id.main_fragment_container
+                );
                 publisher.subscribe(new Observer() {
                                         @Override
                                         public void updateCardData(Note note) {
@@ -222,15 +227,21 @@ public class NoteFragment extends Fragment {
     }
 
     private void addNoteDetailsFragment(int containerId, Note currentNote, boolean useBackStack) {
-        NoteDetailsFragment noteDetailsFragment = NoteDetailsFragment.newInstance(currentNote);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(containerId, noteDetailsFragment, NOTE_DETAILS_FRAGMENT_TAG);  // замена фрагмента
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        if (useBackStack) {
-            fragmentTransaction.addToBackStack(null);
-        }
-        fragmentTransaction.commit();
+        int selectedPosition = noteAdapter.getCurrentNotePosition();
+        navigation.addFragment(NoteDetailsFragment.newInstance(noteCardsSource.getNoteCardData(selectedPosition)),
+                useBackStack,
+                NoteDetailsFragment.NOTE_DETAILS_FRAGMENT_TAG,
+                containerId
+        );
+        publisher.subscribe(new Observer() {
+                                @Override
+                                public void updateCardData(Note note) {
+                                    noteCardsSource.updateNoteCardData(selectedPosition, note);
+                                    noteAdapter.notifyItemInserted(noteCardsSource.size() - 1);
+                                    noteAdapter.notifyItemChanged(selectedPosition);
+                                }
+                            }
+        );
     }
 
 
@@ -249,7 +260,7 @@ public class NoteFragment extends Fragment {
 
     private void deleteNoteDetailFragment(Note note) {
         if (isLandscape && note == currentNote) {
-            navigation.deleteFragmentByTag(NOTE_DETAILS_FRAGMENT_TAG);
+            navigation.deleteFragmentByTag(NoteDetailsFragment.NOTE_DETAILS_FRAGMENT_TAG);
         }
     }
 
