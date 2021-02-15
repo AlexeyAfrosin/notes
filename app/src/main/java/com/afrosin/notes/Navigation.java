@@ -12,10 +12,10 @@ public class Navigation {
         this.fragmentManager = fragmentManager;
     }
 
-    public void addFragment(Fragment fragment, boolean useBackStack) {
+    public void addFragment(Fragment fragment, boolean useBackStack, String tag, int containerId) {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragment_container, fragment);
+        fragmentTransaction.replace(containerId, fragment, tag);
         if (useBackStack) {
             fragmentTransaction.addToBackStack(null);
         }
@@ -33,7 +33,7 @@ public class Navigation {
         }
     }
 
-    private Fragment getFragmentByTag(String fragmentTag) {
+    public Fragment getFragmentByTag(String fragmentTag) {
         return fragmentManager.findFragmentByTag(fragmentTag);
     }
 }
